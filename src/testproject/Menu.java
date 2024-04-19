@@ -6,10 +6,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.imageio.ImageIO;
 import testproject.util;
 import testproject.Administrator;
 import testproject.Doctor;
@@ -49,20 +51,44 @@ public class Menu {
             }
         });
     }
+    static class BgPanel extends JPanel {
+        private Image bgImage;
+        public BgPanel(String fileName) {
+            bgImage = new ImageIcon(fileName).getImage();
+        }
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(bgImage, 0, 0, this);
+        }
+    }
 
     static class LoginGUI extends JFrame {
         public LoginGUI() {
             setTitle("Login - Hospital Management System");
-            setExtendedState(JFrame.MAXIMIZED_BOTH); // to take full screen
+            setExtendedState(JFrame.NORMAL); // to take full screen
             setLayout(new GridBagLayout());
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            setLocationRelativeTo(null); // Center the window
-            
+            //setLocationRelativeTo(null); // Center the window
+            setResizable(false);
+            setSize(600, 800);
+        BgPanel bgPanel = new BgPanel("background.jpg");
+        GridBagConstraints bgPanelConstraints = new GridBagConstraints();
+        bgPanelConstraints.gridx = 0;
+        bgPanelConstraints.gridy = 0; // Placing the logo at the top row
+        bgPanelConstraints.gridwidth = GridBagConstraints.REMAINDER; // Span across all columns
+        bgPanelConstraints.weightx = 0.0;
+        bgPanelConstraints.weighty = 0.0;
+        bgPanelConstraints.fill = GridBagConstraints.BOTH;
+        bgPanelConstraints.anchor = GridBagConstraints.CENTER; // Center components
+        bgPanelConstraints.insets = new Insets(0, 0, 0, 0); // Add padding
+        bgPanel.setSize(600, 800);
             // Create a panel for holding the logo
         JPanel logoPanel = new JPanel();
-        
         // Load the logo image
-        ImageIcon logoImage = new ImageIcon("logo.png");
+        ImageIcon logoImage = new ImageIcon("logo1.png");
+        Image logo = logoImage.getImage();
+        Image scaled = logo.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        logoImage.setImage(logo);
         
         // Create a label to display the logo
         JLabel logoLabel = new JLabel(logoImage);
@@ -82,7 +108,8 @@ public class Menu {
         logoPanelConstraints.insets = new Insets(10, 10, 250, 10); // Add padding
 
         // Add logoPanel to the frame
-        add(logoPanel, logoPanelConstraints);
+        
+        bgPanel.add(logoPanel, logoPanelConstraints);
 
             // Create input panel for labels and text fields
             JPanel inputPanel = new JPanel(new GridLayout(2, 2));
@@ -122,7 +149,7 @@ public class Menu {
             inputPanelConstraints.insets = new Insets(250, 10, 10, 10); // Add padding
 
             // Add inputPanel to the center of the frame
-            add(inputPanel, inputPanelConstraints);
+            bgPanel.add(inputPanel, inputPanelConstraints);
 
             // Create login button
             JButton loginButton = new JButton("Login");
@@ -213,7 +240,8 @@ public class Menu {
             loginButtonConstraints.insets = new Insets(10, 10, 10, 10); // Add padding
 
             // Add loginButton below inputPanel
-            add(loginButton, loginButtonConstraints);
+            bgPanel.add(loginButton, loginButtonConstraints);
+            add(bgPanel, bgPanelConstraints);
         }
     }
 
